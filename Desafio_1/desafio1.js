@@ -1,4 +1,4 @@
-console.log("Este es el desafío 1");
+console.log("Este es el desafío 1, porfavor que este bien ahora T_T");
 
 class ProductManager {
   constructor() {
@@ -12,11 +12,14 @@ class ProductManager {
 
   // Método para agregar productos nuevos.
   addProducts(title, description, price, thumbnail, code, stock) {
-    // Usamos findIndex para buscar el índice del producto existente por su código.
-    const productIndex = this.products.findIndex((product) => product.code === code);
-    
+    const isCodeUnique = this.products.every((product) => product.code !== code);
+    if (!isCodeUnique) {
+      console.log(`El código ${code} del producto ya está en uso.`);
+  return;
+
+  }
     // Si no encontramos un producto con el mismo código (índice es -1), lo agregamos.
-    if (productIndex === -1) {
+    if (isCodeUnique) {
       this.products.push({
         id: this.products.length + 1,
         title,
@@ -26,11 +29,6 @@ class ProductManager {
         code,
         stock,
       });
-      return;
-    } else {
-      // Si encontramos un producto con el mismo código, mostramos un mensaje de error.
-      console.log(`El código del producto ${code} a agregar ya existe y no puede agregarse nuevamente.`);
-      return;
     }
   }
 
@@ -52,6 +50,8 @@ let productManager = new ProductManager();
 productManager.addProducts("title", "description", 11 ,"thumbnail","code", 10);
 productManager.addProducts("title", "description", 11 ,"thumbnail","code2", 10);
 productManager.addProducts("title", "description", 11 ,"thumbnail","code2", 10);
+productManager.addProducts("title", "description", 11 ,"thumbnail","121212", 10);
+productManager.addProducts("title", "description", 11 ,"thumbnail","121212", 10);
 console.log (productManager.getProducts())
 
 // >>>>
