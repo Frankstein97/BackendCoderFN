@@ -1,9 +1,10 @@
-console.log("Este es el desafío 2, file System!");
+console.log("Este es el desafío 2, file System! con correcciones");
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 const fs = require("fs");
 
 class ProductManager {
-  constructor(path) {  //La clase debe contar con una variable this.path
+  constructor(path) {
+    //La clase debe contar con una variable this.path
     this.path = path;
 
     if (fs.existsSync(this.path)) {
@@ -15,7 +16,6 @@ class ProductManager {
 
   // Método para agregar productos nuevos.
   addProduct = (title, description, price, thumbnail, code, stock) => {
-
     // Verificar si el código del producto ya existe
     let findProduct = this.products.some((p) => p.code === code);
 
@@ -44,37 +44,66 @@ class ProductManager {
     }
   };
 
-// Método para obtener todos los productos.
-  getProduct() {
-    return console.log(this.products);
-  }
-
-     // Usamos find para buscar el producto por su ID.
-  getProductById(id) {
-    let findById = this.products.find((p) => p.id === id);
-    // Si no encontramos el producto, registramos un mensaje de error.
-    !findById ? console.log("Product error") : console.log("Product encontrado");
-    console.log(`Product ${id}:`, findById);
-  }
-
-  // Metodo para actualizar el producto segun id
-  updateProduct(id, value, newValue) {
-    let findIndex = this.products.findIndex((e) => e.id === id);
-    let validKeys = Object.keys(this.products[findIndex]).some(
-      (e) => e === value
-    );
-
-    if (value === "id") {
-      console.log("The Id no se puede modificar");
-    } else if (!validKeys) {
-      console.log("La key no es valida");
+  // Método para obtener todos los productos.
+  getProducts() {
+    if (fs.existsSync(this.path)) {
+      const productData = fs.readFileSync(this.path, "utf-8");
+      try {
+        const products = JSON.parse(productData);
+        return products;
+      } catch (error) {
+        console.error("error al obtener archivo json", error);
+        return [];
+      }
     } else {
-      this.products[findIndex][value] = newValue;
-      fs.writeFileSync(this.path, JSON.stringify(this.products, null, "\t"));
+      console.error("no se puede obtener archivo de productos", this.path);
+      return [];
     }
   }
 
-  // Metodo para borrar producto segun id 
+  // Usamos find para buscar el producto por su ID.
+  getProductById(id) {
+    const foundProduct = this.products.find((p) => p.id === id);
+
+    if (!foundProduct) {
+      throw new Error("Producto no encontrado");
+    }
+    return foundProduct;
+  }
+
+  // Metodo para actualizar el producto segun id
+  updateProduct(id, updatedProduct) {
+    const findIndex = this.products.findIndex((e) => e.id === id);
+
+    if (findIndex === -1) {
+      console.log("Producto no encontrado, nada que updatear");
+      return;
+    }
+
+    // Validar si el código del producto se repite en otro producto
+    const isCodeRepeated = this.products.some(
+      (p, index) => index !== findIndex && p.code === updatedProduct.code
+    );
+
+    if (isCodeRepeated) {
+      console.log(
+        "El código ya existe en otro producto. No se puede updatear."
+      );
+      return;
+    }
+
+    // Actualizar solo los campos válidos del producto
+    for (const key in updatedProduct) {
+      if (key !== "id") {
+        this.products[findIndex][key] = updatedProduct[key];
+      }
+    }
+
+    fs.writeFileSync(this.path, JSON.stringify(this.products, null, "\t"));
+    console.log("Producto actualizado con éxito");
+  }
+
+  // Metodo para borrar producto segun id
   deleteProduct(id) {
     let searchToDelete = this.products.some((p) => p.id === id);
     if (searchToDelete) {
@@ -87,53 +116,67 @@ class ProductManager {
   }
 }
 
+
+
+
+////////////////////////TESTING///////////////////////////
+
 // MANAGER
 const manager = new ProductManager("./products.json");
 
-// TEST PRODUCTS
-manager.addProduct(
-  "Product1",
-  "Product description",
-  210,
-  "imagen.jpg",
-  "PR01",
-  5
-);
-manager.addProduct(
-  "Product2",
-  "Product description",
-  220,
-  "imagen.jpg",
-  "PR02",
-  10
-);
-manager.addProduct(
-  "Product3",
-  "Product description",
-  230,
-  "imagen.jpg",
-  "PR03",
-  15
-);
-manager.addProduct(
-  "Product4",
-  "Product description",
-  240,
-  "imagen.jpg",
-  "PR04",
-  20
-);
+// // TEST PRODUCTS
+// manager.addProduct(
+//   "Product1",
+//   "Product description",
+//   210,
+//   "imagen.jpg",
+//   "PR01",
+//   5
+// );
+// manager.addProduct(
+//   "Product2",
+//   "Product description",
+//   220,
+//   "imagen.jpg",
+//   "PR02",
+//   10
+// );
+// manager.addProduct(
+//   "Product3",
+//   "Product description",
+//   230,
+//   "imagen.jpg",
+//   "PR03",
+//   15
+// );
+// manager.addProduct(
+//   "Product4",
+//   "Product description",
+//   240,
+//   "imagen.jpg",
+//   "PR04",
+//   20
+// );
 
 // // getProducts
-// manager.getProduct();
+// const allProducts = manager.getProducts();
+// console.log(allProducts);
 
-// // GET getProductById
-// manager.getProductById(2);
+// // getProductById
+// const product = manager.getProductById(3);
+// console.log('Producto encontrado:', product);
 
 // // updateProduct
-// manager.updateProduct(3, "price", 500);
-// manager.getProduct(); // <- Chequear
+// const updatedData = {
+//   title: "Updated título",
+//   description: "Updated descripción",
+//   price: 199,
+//   thumbnail: "Updated.jpg",
+//   code: "1234", // Probar codigo repetido y codigo nuevo.
+//   stock: 50,
+// };
+// manager.updateProduct(4, updatedData);
 
-// // // deleteProduct
+// //  deleteProduct
 // manager.deleteProduct(4);
-// manager.getProduct(); // <- Chequear
+// manager.getProducts(); // <- Chequear si lo borro da error
