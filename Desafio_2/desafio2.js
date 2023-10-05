@@ -16,9 +16,15 @@ class ProductManager {
 
   // Método para agregar productos nuevos.
   addProduct = (title, description, price, thumbnail, code, stock) => {
+    // Validar que todos los parámetros requeridos estén presentes si o si
+    if (!title || !description || !price || !thumbnail || !code || !stock) {
+      console.log("Faltan parámetros para agregar el producto.");
+      return;
+    }
+  
     // Verificar si el código del producto ya existe
     let findProduct = this.products.some((p) => p.code === code);
-
+  
     let product = {
       title: title,
       description: description,
@@ -27,22 +33,23 @@ class ProductManager {
       code: code,
       stock: stock,
     };
-
+  
     // buscar el id en product
     if (this.products.length === 0) {
       product["id"] = 1;
     } else {
       product["id"] = this.products[this.products.length - 1]["id"] + 1;
     }
-
+  
     if (findProduct) {
       console.log("El producto ya existe.");
     } else {
       this.products.push(product);
-      fs.writeFileSync(this.path, JSON.stringify(this.products, null, "\t")); // << WRITE
+      fs.writeFileSync(this.path, JSON.stringify(this.products, null, "\t"));
       console.log("Producto añadido");
     }
   };
+  
 
   // Método para obtener todos los productos.
   getProducts() {
@@ -74,34 +81,36 @@ class ProductManager {
   // Metodo para actualizar el producto segun id
   updateProduct(id, updatedProduct) {
     const findIndex = this.products.findIndex((e) => e.id === id);
-
+  
     if (findIndex === -1) {
-      console.log("Producto no encontrado, nada que updatear");
+      console.log("Producto no encontrado, nada que actualizar");
       return;
     }
-
+  
     // Validar si el código del producto se repite en otro producto
     const isCodeRepeated = this.products.some(
       (p, index) => index !== findIndex && p.code === updatedProduct.code
     );
-
+  
     if (isCodeRepeated) {
       console.log(
-        "El código ya existe en otro producto. No se puede updatear."
+        "El código ya existe en otro producto. No se puede actualizar."
       );
       return;
     }
-
+  
     // Actualizar solo los campos válidos del producto
     for (const key in updatedProduct) {
-      if (key !== "id") {
+      if (key !== "id" && key in this.products[findIndex]) {
         this.products[findIndex][key] = updatedProduct[key];
       }
     }
-
+  
     fs.writeFileSync(this.path, JSON.stringify(this.products, null, "\t"));
     console.log("Producto actualizado con éxito");
   }
+  
+
 
   // Metodo para borrar producto segun id
   deleteProduct(id) {
@@ -120,6 +129,7 @@ class ProductManager {
 
 
 ////////////////////////TESTING///////////////////////////
+
 
 // MANAGER
 const manager = new ProductManager("./products.json");
@@ -166,16 +176,16 @@ const manager = new ProductManager("./products.json");
 // const product = manager.getProductById(3);
 // console.log('Producto encontrado:', product);
 
-// // updateProduct
-// const updatedData = {
-//   title: "Updated título",
-//   description: "Updated descripción",
-//   price: 199,
-//   thumbnail: "Updated.jpg",
-//   code: "1234", // Probar codigo repetido y codigo nuevo.
-//   stock: 50,
-// };
-// manager.updateProduct(4, updatedData);
+// updateProduct
+const updatedData = {
+  title: "Updated título",
+  description: "Updated descripción",
+  price: 199,
+  thumbnail: "Updated.jpg",
+  code: "1234", // Probar codigo repetido y codigo nuevo.
+  stock: 50,
+};
+manager.updateProduct(4, updatedData);
 
 // //  deleteProduct
 // manager.deleteProduct(4);
