@@ -26,11 +26,15 @@ app.get("/products", (req, res) => {
 // get by ID >> http://localhost:8080/products/1
 
 app.get("/products/:pid", async (req, res) => {
+  try { 
   let productId = parseInt(req.params.pid);
   let response = await manager.getProductById(productId);
-
   console.log(response);
-  res.json(response || { Error: "Producto no encontrado" });
+res.json (response);
+} catch (error){ 
+  console.error(error)
+  res.status(404).json ({ Error: "Producto no encontrado" });
+  }
 });
 
 //listen: >> http://localhost:8080/
