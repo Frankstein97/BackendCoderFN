@@ -3,59 +3,55 @@ const fs = require("fs");
 class CartManager {
   constructor(path) {
     this.path = path;
-    fs.existsSync(this.path)
-      ? (this.cart = JSON.parse(fs.readFileSync(this.path, "utf-8")))
-      : (this.cart = []);
+    this.loadCart();
   }
 
-  //METHODS
+  loadCart() {
+    if (fs.existsSync(this.path)) {
+      this.cart = JSON.parse(fs.readFileSync(this.path, "utf-8"));
+    } else {
+      this.cart = [];
+    }
+  }
 
-  // Create Cart
-  async addCart() {
-    let carts = {
+  saveCart() {
+    fs.writeFileSync(this.path, JSON.stringify(this.cart, null, "\t"));
+  }
+
+  addCart() {
+    const newCart = {
+      id: this.cart.length === 0 ? 1 : this.cart[this.cart.length - 1].id + 1,
       products: [],
     };
 
-    if (this.cart.length === 0) {
-      carts["id"] = 1;
-    } else {
-      carts["id"] = this.cart[this.cart.length - 1]["id"] + 1;
-    }
-
-    this.cart.push(carts);
-    await fs.writeFileSync(this.path, JSON.stringify(this.cart, null, "\t"));
+    this.cart.push(newCart);
+    this.saveCart();
   }
 
-  // Add Product to Cart
-  async addProductToCart(id, pid, quantity) {
-    let carts = this.cart.find((c) => c.id === id);
-    let product = {
-      id: pid,
-      quantity: quantity,
-    };
+  getCart(id) {
+    const cart = this.cart.find((c) => c.id === id);
+    return cart || null;
+  }
 
-    // If product already exists in cart, update quantity
-    let productIndex = carts.products.findIndex((p) => p.id === pid);
-    if (productIndex !== -1) {
-      carts.products[productIndex].quantity += quantity;
-      await fs.writeFileSync(this.path, JSON.stringify(this.cart, null, "\t"));
-      return true;
-    }
+  addProductToCart(cartId, productId, quantity) {
+    const cart = this.getCart(cartId);
 
-    if (carts) {
-      carts.products.push(product);
-      await fs.writeFileSync(this.path, JSON.stringify(this.cart, null, "\t"));
-      return true;
-    } else {
+    if (!cart) {
       return false;
     }
-  }
 
-  // Get Cart
-  getCart(id) {
-    let carts = this.cart.find((c) => c.id === id);
-    return carts || false;
+    const productIndex = cart.products.findIndex((p) => p.id === productId);
+
+    if (productIndex !== -1) {
+      cart.products[productIndex].quantity += quantity;
+    } else {
+      cart.products.push({ id: productId, quantity });
+    }
+
+    this.saveCart();
+    return true;
   }
 }
 
 module.exports = new CartManager("./data/carts.json");
+

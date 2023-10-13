@@ -1,32 +1,53 @@
 const { Router } = require("express");
-const CartManager = require("../src/CartManager.js");
+const CartManager = require("../CartManager.js");
 
 const router = Router();
 
+// Obtener un carrito por su ID
 router.get("/:cid", (req, res) => {
-  let cid = parseInt(req.params.cid);
-  CartManager.getCart(cid)
-    ? res.status(200).json(CartManager.getCart(cid))
-    : res.status(404).json({ info: "Cart not found" });
+  try {
+    const cartId = parseInt(req.params.cid);
+    const cart = CartManager.getCart(cartId);
+    
+    if (cart) {
+      res.status(200).json(cart);
+    } else {
+      res.status(404).json({ error: "Carrito no encontrado" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener carrito" });
+  }
 });
 
-router.post("/", async (req, res) => {
-  CartManager.addCart();
-  res.status(201).json({ info: "Cart added" });
+// Crear un nuevo carrito
+router.post("/", (req, res) => {
+  try {
+    CartManager.addCart();
+    res.status(201).json({ message: "Carrito creado exitosamente" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al crear carrito" });
+  }
 });
 
-router.post("/:cid/product/:pid", async (req, res) => {
-  let cid = parseInt(req.params.cid);
-  let pid = parseInt(req.params.pid);
+// Agregar un producto a un carrito
+router.post("/:cid/product/:pid", (req, res) => {
+  const cartId = parseInt(req.params.cid);
+  const productId = parseInt(req.params.pid);
+  const quantity = parseInt(req.body.quantity);
 
-  let quantity = parseInt(req.body.quantity);
-  let product = CartManager.getCart(pid);
+  try {
+    const added = CartManager.addProductToCart(cartId, productId, quantity);
 
-  if (product) {
-    CartManager.addProductToCart(cid, pid, quantity);
-    res.status(201).json({ info: "Product added to cart" });
-  } else {
-    res.status(404).json({ info: "Cart not found" });
+    if (added) {
+      res.status(201).json({ message: "Producto agregado al carrito exitosamente" });
+    } else {
+      res.status(404).json({ error: "Carrito no encontrado o producto no encontrado" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al agregar producto al carrito" });
   }
 });
 
