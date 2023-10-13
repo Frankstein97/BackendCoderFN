@@ -1,0 +1,113 @@
+[
+	{
+	  "title": "Gusanos de Seda Deshidratados",
+	  "description": "Insectos comestibles ricos en proteínas.",
+	  "category": "Insectos comestibles",
+	  "price": 9.99,
+	  "thumbnail": "No image",
+	  "code": "INS01",
+	  "status": true,
+	  "stock": 50,
+	  "id": 1
+	},
+	{
+	  "title": "Grillos al Chipotle",
+	  "description": "Insectos crujientes condimentados con sabor picante.",
+	  "category": "Insectos comestibles",
+	  "price": 12.99,
+	  "thumbnail": "No image",
+	  "code": "INS02",
+	  "status": true,
+	  "stock": 35,
+	  "id": 2
+	},
+	{
+	  "title": "Escorpiones en Chocolate",
+	  "description": "Insectos venenosos cubiertos de chocolate.",
+	  "category": "Insectos comestibles",
+	  "price": 14.99,
+	  "thumbnail": "No image",
+	  "code": "INS03",
+	  "status": true,
+	  "stock": 20,
+	  "id": 3
+	},
+	{
+	  "title": "Saltamontes al Curry",
+	  "description": "Insectos saltamontes con sabor a curry.",
+	  "category": "Insectos comestibles",
+	  "price": 10.99,
+	  "thumbnail": "No image",
+	  "code": "INS04",
+	  "status": true,
+	  "stock": 30,
+	  "id": 4
+	},
+	{
+	  "title": "Arañas Fritas",
+	  "description": "Insectos arácnidos crujientes y salados.",
+	  "category": "Insectos comestibles",
+	  "price": 8.99,
+	  "thumbnail": "No image",
+	  "code": "INS05",
+	  "status": true,
+	  "stock": 40,
+	  "id": 5
+	},
+	{
+	  "title": "Chapulines con Chile y Limón",
+	  "description": "Chapulines sazonados con chile y limón.",
+	  "category": "Insectos comestibles",
+	  "price": 11.99,
+	  "thumbnail": "No image",
+	  "code": "INS06",
+	  "status": true,
+	  "stock": 25,
+	  "id": 6
+	},
+	{
+	  "title": "Escarabajos BBQ",
+	  "description": "Insectos escarabajos con sabor a barbacoa.",
+	  "category": "Insectos comestibles",
+	  "price": 13.49,
+	  "thumbnail": "No image",
+	  "code": "INS07",
+	  "status": true,
+	  "stock": 15,
+	  "id": 7
+	},
+	{
+	  "title": "Orugas al Chocolate Blanco",
+	  "description": "Insectos orugas bañados en chocolate blanco.",
+	  "category": "Insectos comestibles",
+	  "price": 15.99,
+	  "thumbnail": "No image",
+	  "code": "INS08",
+	  "status": true,
+	  "stock": 10,
+	  "id": 8
+	},
+	{
+	  "title": "Mantis Religiosas con Salsa de Soja",
+	  "description": "Insectos mantis religiosas con salsa de soja.",
+	  "category": "Insectos comestibles",
+	  "price": 12.99,
+	  "thumbnail": "No image",
+	  "code": "INS09",
+	  "status": true,
+	  "stock": 18,
+	  "id": 9
+	},
+	{
+	  "title": "Escarabajos de Oro",
+	  "description": "Insectos escarabajos recubiertos de oro comestible.",
+	  "category": "Insectos comestibles",
+	  "price": 29.99,
+	  "thumbnail": "No image",
+	  "code": "INS10",
+	  "status": true,
+	  "stock": 5,
+	  "id": 10
+	}
+  ]
+  

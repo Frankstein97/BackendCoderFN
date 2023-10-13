@@ -14,9 +14,9 @@ class ProductManager {
   }
 
   // Método para agregar productos nuevos.
-  addProduct = (title, description, price, thumbnail, code, stock) => {
+  addProduct = (title, description, price, thumbnail, code, stock, category) => {
     // Validar que todos los parámetros requeridos estén presentes si o si
-    if (!title || !description || !price || !thumbnail || !code || !stock) {
+    if (!title || !description || !price || !thumbnail || !code || !stock || !category) {
       console.log("Faltan parámetros para agregar el producto.");
       return;
     }
@@ -31,6 +31,7 @@ class ProductManager {
       thumbnail: thumbnail,
       code: code,
       stock: stock,
+      category: category
     };
   
     // buscar el id en product
@@ -80,24 +81,16 @@ class ProductManager {
   // Metodo para actualizar el producto segun id
   updateProduct(id, updatedProduct) {
     const findIndex = this.products.findIndex((e) => e.id === id);
-  
     if (findIndex === -1) {
-      console.log("Producto no encontrado, nada que actualizar");
-      return;
+      return false;
     }
-  
     // Validar si el código del producto se repite en otro producto
     const isCodeRepeated = this.products.some(
       (p, index) => index !== findIndex && p.code === updatedProduct.code
     );
-  
     if (isCodeRepeated) {
-      console.log(
-        "El código ya existe en otro producto. No se puede actualizar."
-      );
-      return;
+      return false;
     }
-  
     // Actualizar solo los campos válidos del producto
     for (const key in updatedProduct) {
       if (key !== "id" && key in this.products[findIndex]) {
@@ -106,7 +99,7 @@ class ProductManager {
     }
   
     fs.writeFileSync(this.path, JSON.stringify(this.products, null, "\t"));
-    console.log("Producto actualizado con éxito");
+    return true;
   }
   
 
@@ -117,79 +110,11 @@ class ProductManager {
     if (searchToDelete) {
       this.products = this.products.filter((e) => e.id !== id);
       fs.writeFileSync(this.path, JSON.stringify(this.products, null, "\t"));
-      console.log("Product borrado con exito");
+      return true;
     } else {
-      console.error("Product error");
+      return false;
     }
   }
 }
 
-
-
-
-////////////////////////TESTING///////////////////////////
-
-
-// MANAGER se va a vivir al app.js
-const manager = new ProductManager("./products.json");
-
-// // TEST PRODUCTS
-// manager.addProduct(
-//   "Product1",
-//   "Product description",
-//   210,
-//   "imagen.jpg",
-//   "PR01",
-//   5
-// );
-// manager.addProduct(
-//   "Product2",
-//   "Product description",
-//   220,
-//   "imagen.jpg",
-//   "PR02",
-//   10
-// );
-// manager.addProduct(
-//   "Product3",
-//   "Product description",
-//   230,
-//   "imagen.jpg",
-//   "PR03",
-//   15
-// );
-// manager.addProduct(
-//   "Product4",
-//   "Product description",
-//   240,
-//   "imagen.jpg",
-//   "PR04",
-//   20
-// );
-
-// // getProducts
-// const allProducts = manager.getProducts();
-// console.log(allProducts);
-
-// // getProductById
-// const product = manager.getProductById(3);
-// console.log('Producto encontrado:', product);
-
-// // updateProduct
-// const updatedData = {
-//   title: "Updated título",
-//   description: "Updated descripción",
-//   price: 199,
-//   thumbnail: "Updated.jpg",
-//   code: "1234", // Probar codigo repetido y codigo nuevo.
-//   stock: 50,
-// };
-// manager.updateProduct(4, updatedData);
-
-// //  deleteProduct
-// manager.deleteProduct(4);
-// manager.getProducts(); // <- Chequear si lo borro da error
-
-
-module.exports = { ProductManager };
-
+module.exports = new ProductManager("./data/products.json");
